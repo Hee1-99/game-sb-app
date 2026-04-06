@@ -1,65 +1,82 @@
-import Image from "next/image";
+import Link from "next/link";
+import { MoveRight, Monitor, Settings } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="relative min-h-screen bg-[#0B0E14] overflow-hidden flex flex-col items-center justify-center p-6 text-[#FAFAFA]">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-rose-500/10 blur-[120px] rounded-full animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-900/10 blur-[120px] rounded-full" />
+
+      {/* Hero Header */}
+      <div className="relative z-10 text-center mb-16 space-y-4">
+        <h2 className="text-rose-500 font-bold tracking-[0.3em] text-sm uppercase animate-in fade-in slide-in-from-bottom-4 duration-700">
+          Digital Performance Suite
+        </h2>
+        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          MIDNIGHT<br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-rose-700 underline decoration-rose-500/30 underline-offset-8">ENERGY</span>
+        </h1>
+        <p className="text-zinc-500 text-lg max-w-md mx-auto font-medium tracking-tight opacity-80">
+          High-performance real-time scoreboard & state management for competitive gaming environments.
+        </p>
+      </div>
+
+      {/* Navigation Cards */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl animate-in fade-in slide-in-from-bottom-12 duration-1000">
+        
+        {/* Viewer Card */}
+        <Link href="/viewer" className="group">
+          <div className="relative h-full p-8 rounded-3xl bg-zinc-900/40 border border-zinc-800/50 backdrop-blur-xl hover:border-rose-500/50 hover:bg-zinc-900/60 transition-all duration-500 overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Monitor size={120} />
+            </div>
+            <div className="relative space-y-6">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20 group-hover:scale-110 transition-transform">
+                <Monitor size={24} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Live Viewer</h3>
+                <p className="text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                  Public dashboard with real-time score updates and 1st place highlighting.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-rose-500 font-bold tracking-tight">
+                ENTER STREAM <MoveRight size={20} className="group-hover:translate-x-2 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* Admin Card */}
+        <Link href="/admin" className="group">
+          <div className="relative h-full p-8 rounded-3xl bg-zinc-900/40 border border-zinc-800/50 backdrop-blur-xl hover:border-zinc-500/50 hover:bg-zinc-900/60 transition-all duration-500 overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Settings size={120} />
+            </div>
+            <div className="relative space-y-6">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10 group-hover:scale-110 transition-transform">
+                <Settings size={24} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Admin Console</h3>
+                <p className="text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                  Secure control room for real-time score editing and game resets.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-white font-bold tracking-tight opacity-60 group-hover:opacity-100 transition-all">
+                MANAGE STATE <MoveRight size={20} className="group-hover:translate-x-2 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </Link>
+
+      </div>
+
+      {/* Footer Branding */}
+      <div className="mt-20 opacity-30 font-bold tracking-widest text-xs uppercase animate-pulse">
+        Powered by Antigravity Orchestration v1.0
+      </div>
+    </main>
   );
 }
