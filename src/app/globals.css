@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@source "../**/*.{ts,tsx}";
+
+@theme {
+  --color-primary: #f43f5e;
+  --color-secondary: #8b5cf6;
+  --color-accent: #fbbf24;
+  --color-surface: #161b22;
+  --color-surface-hover: #1c2128;
+}
+
+@layer base {
+  body {
+    background-color: #0b0e14 !important;
+    color: #fafafa !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', 'Inter', sans-serif;
+  }
+}
+
+@utility glass-card {
+  background-color: rgba(22, 27, 34, 0.8) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+}
+
+@utility shimmer-gold {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(251, 191, 36, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
