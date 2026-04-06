@@ -32,6 +32,7 @@ interface GameState {
   resetScores: () => Promise<void>;
   
   // Gameplay Actions
+  nextRound: () => Promise<void>;
   awardPointsToTeams: (teamIds: string[]) => Promise<void>;
   updateTeamScore: (teamId: string, amount: number) => Promise<void>;
   startGame: () => Promise<void>;
@@ -128,6 +129,43 @@ async function updateTeamScoreWithRetry(teamId: string, amount: number, initialS
   }
 
   throw new Error(`Failed to update score for team ${teamId} after retries.`);
+}
+
+function getNextRound(config: GameConfig) {
+  return Math.min(config.total_rounds + 1, config.current_round + 1);
+}
+
+async function advanceRoundWithSync(
+  config: GameConfig,
+  set: (partial: Partial<GameState>) => void
+) {
+  const nextRound = getNextRound(config);
+
+  set({ config: { ...config, current_round: nextRound } });
+
+  beginMutation();
+
+  try {
+    const { data: updatedConfig, error } = await supabase
+      .from('game_config')
+      .update({ current_round: nextRound })
+      .eq('id', config.id)
+      .eq('current_round', config.current_round)
+      .select('id')
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!updatedConfig) {
+      throw new Error('Round update conflict detected while advancing round.');
+    }
+
+    await syncSnapshot(set, { deferDuringMutation: false });
+  } catch (error) {
+    console.error('Advance Round Error:', error);
+    await syncSnapshot(set, { deferDuringMutation: false });
+  } finally {
+    await endMutation(set);
+  }
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -238,15 +276,17 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
+  nextRound: async () => {
+    const { config } = get();
+    await advanceRoundWithSync(config, set);
+  },
+
   awardPointsToTeams: async (teamIds) => {
     const runAward = async () => {
       const { config, teams } = get();
       const uniqueTeamIds = [...new Set(teamIds)];
-
-      if (uniqueTeamIds.length === 0) return;
-
       const currentWeight = config.round_weights[config.current_round - 1] || 0;
-      const nextRound = Math.min(config.total_rounds + 1, config.current_round + 1);
+      const nextRound = getNextRound(config);
 
       // Optimistic UI update for the local controller.
       set({
@@ -259,22 +299,24 @@ export const useGameStore = create<GameState>((set, get) => ({
       beginMutation();
 
       try {
-        await Promise.all(
-          uniqueTeamIds.map(async (id) => {
-            const team = teams.find(t => t.id === id);
-            if (!team) return;
+        if (uniqueTeamIds.length > 0) {
+          await Promise.all(
+            uniqueTeamIds.map(async (id) => {
+              const team = teams.find(t => t.id === id);
+              if (!team) return;
 
-            await updateTeamScoreWithRetry(id, currentWeight, team.total_score);
+              await updateTeamScoreWithRetry(id, currentWeight, team.total_score);
 
-            const { error: scoreLogError } = await supabase.from('score_logs').insert([{
-              team_id: id,
-              round_number: config.current_round,
-              points_awarded: currentWeight
-            }]);
+              const { error: scoreLogError } = await supabase.from('score_logs').insert([{
+                team_id: id,
+                round_number: config.current_round,
+                points_awarded: currentWeight
+              }]);
 
-            if (scoreLogError) throw scoreLogError;
-          })
-        );
+              if (scoreLogError) throw scoreLogError;
+            })
+          );
+        }
 
         const { data: updatedConfig, error: configError } = await supabase
           .from('game_config')

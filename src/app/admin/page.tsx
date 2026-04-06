@@ -185,22 +185,26 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Award Button */}
+              {/* Award / Skip Button */}
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleAwardAndNext}
-                disabled={!config.is_active || selectedTeamIds.length === 0}
+                disabled={!config.is_active}
                 style={{
-                  backgroundColor: config.is_active && selectedTeamIds.length > 0 ? '#f43f5e' : 'rgba(255, 255, 255, 0.05)',
-                  color: config.is_active && selectedTeamIds.length > 0 ? '#fff' : 'rgba(255, 255, 255, 0.2)'
+                  backgroundColor: config.is_active ? (selectedTeamIds.length > 0 ? '#f43f5e' : 'rgba(255, 255, 255, 0.1)') : 'rgba(255, 255, 255, 0.05)',
+                  color: config.is_active ? '#fff' : 'rgba(255, 255, 255, 0.2)'
                 }}
                 className="lg:w-80 rounded-[2.5rem] p-10 flex flex-col items-center justify-center gap-2 shadow-2xl transition-all cursor-pointer disabled:cursor-not-allowed group"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black italic tracking-tighter">AWARD POINTS</span>
-                  <ChevronRight size={28} className="group-hover:translate-x-2 transition-transform" />
+                <div className="flex items-center gap-2 text-center">
+                  <span className="text-2xl font-black italic tracking-tighter uppercase leading-tight">
+                    {selectedTeamIds.length > 0 ? "Award Points" : "Skip Round"}
+                  </span>
+                  <ChevronRight size={28} className="group-hover:translate-x-2 transition-transform flex-shrink-0" />
                 </div>
-                <span className="text-[10px] font-black tracking-widest uppercase opacity-60">Complete Round</span>
+                <span className="text-[10px] font-black tracking-widest uppercase opacity-60">
+                  {selectedTeamIds.length > 0 ? "Complete Round" : "Proceed to Next"}
+                </span>
               </motion.button>
             </div>
 
